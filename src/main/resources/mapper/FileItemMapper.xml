@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.happiify.archive.dao.FileItemDao">
+
+
+    <insert id="insert" parameterType="com.happiify.archive.domain.FileItem">
+        INSERT INTO h1_fileitems (user_id, item_path, item_name, physical_name, item_description, creation_date,
+        item_size, is_folder)
+        VALUES(#{user_id},#{item_path},#{item_name},#{physical_name},#{item_description},#{creation_date},#{item_size},#{is_folder})
+    </insert>
+
+    <select id="getFileItemsByUserId" resultType="com.happiify.archive.domain.FileItem">
+        SELECT * FROM h1_fileitems WHERE user_id=#{user_id} and is_deleted = false
+    </select>
+    <update id="deleteFileItem">
+        UPDATE h1_fileitems SET is_deleted=true WHERE id=#{fileItemId}
+    </update>
+    <update id="moveFileItem">
+
+    </update>
+    <update id="renameFileItem">
+
+    </update>
+
+
+</mapper>
