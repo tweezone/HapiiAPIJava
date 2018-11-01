@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class FileItemController {
 
-    static final String uploadedFileFolder = "/uploadedfile";
+    static final String uploadedFileFolder = "/Users/chenguoyan/Desktop/uploadedfile";
 
     @RequestMapping(value = "test", method = RequestMethod.GET)
     public String test(@RequestParam String param) {
