@@ -1,5 +1,6 @@
 package com.happiify.archive.controller;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import com.happiify.archive.domain.FileItem;
@@ -88,11 +89,18 @@ public class FileItemController {
         return fileItemId;
     }
 
-    @RequestMapping(value="archive/move", method = RequestMethod.POST)
+    @RequestMapping(value="archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public int moveFileItem(@RequestBody Map<String, String> requestMap) {
-        int fileItemId = Integer.parseInt(requestMap.get("fileItemId")) ;
-        String destinationPath = requestMap.get("destinationPath");
-        return fileItemService.moveFileItem(fileItemId, destinationPath);
+        int fileItemId = Integer.parseInt(requestMap.get("item_id")) ;
+        System.out.println(fileItemId);
+
+        boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
+        System.out.println(isFolder);
+        String destinationPath = requestMap.get("destination_folder");
+        System.out.println(destinationPath);
+        String currentPath = requestMap.get("current_path");
+
+        return fileItemService.moveFileItem(fileItemId, destinationPath, isFolder, currentPath);
     }
     @RequestMapping(value="archive/rename", method = RequestMethod.POST)
     public int renameFileItem(@RequestBody Map<String, String> requestMap) {

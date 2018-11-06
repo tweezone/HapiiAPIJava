@@ -19,6 +19,14 @@
     </update>
     <update id="moveFileItem">
 
+        UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE
+        <if test="isFolder==false">
+            id=#{fileItemId};
+        </if>
+        <if test="isFolder==true">
+            (item_path like CONCAT(#{currentPath},'%') AND is_folder = false) OR id=#{fileItemId}
+        </if>
+
     </update>
     <update id="renameFileItem">
 

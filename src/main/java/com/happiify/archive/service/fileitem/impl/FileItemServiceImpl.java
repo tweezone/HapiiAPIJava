@@ -6,6 +6,7 @@ import com.happiify.archive.dao.FileItemDao;
 import com.happiify.archive.domain.FileItem;
 import com.happiify.archive.service.fileitem.FileItemService;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,8 +32,11 @@ public class FileItemServiceImpl implements FileItemService {
     }
 
     @Override
-    public int moveFileItem(int fileItemId, String destinationPath){
-        return fileItemDao.moveFileItem(fileItemId, destinationPath);
+    public int moveFileItem(@Param("fileItemId") int fileItemId,
+                            @Param("destinationPath") String destinationPath,
+                            @Param("isFolder") boolean isFolder,
+                            @Param("currentPath") String currentPath) {
+        return fileItemDao.moveFileItem(fileItemId, destinationPath, isFolder, currentPath);
     }
 
     @Override
