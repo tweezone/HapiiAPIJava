@@ -1,6 +1,8 @@
 package com.happiify.archive.service.fileitem;
 
 import java.util.List;
+import java.util.Map;
+
 import com.happiify.archive.domain.FileItem;
 
 public interface FileItemService {
@@ -9,4 +11,7 @@ public interface FileItemService {
     int deleteFileItem(int fileItemId);
     int moveFileItem(int fileItemId, String destinationPath, boolean isFolder, String currentPath);
     int renameFileItem(int fileItemId, String newName);
+    FileItem getFileItemDetail(int fileItemId);
+    void setFileItemToBePublic(int fileItemId, boolean isPublic);
+    void setFileItemToBeHealthRelated(int fileItemId);
 }

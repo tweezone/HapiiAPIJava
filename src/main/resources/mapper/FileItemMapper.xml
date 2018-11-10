@@ -14,9 +14,15 @@
     <select id="getFileItemsByUserId" resultType="com.happiify.archive.domain.FileItem">
         SELECT * FROM h1_fileitems WHERE user_id=#{user_id} and is_deleted = false
     </select>
+
+    <select id="getFileItemDetail" resultType="com.happiify.archive.domain.FileItem">
+        SELECT * FROM h1_fileitems WHERE id=#{fileItemId}
+    </select>
+
     <update id="deleteFileItem">
         UPDATE h1_fileitems SET is_deleted=true WHERE id=#{fileItemId}
     </update>
+
     <update id="moveFileItem">
 
         UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE
@@ -29,7 +35,15 @@
 
     </update>
     <update id="renameFileItem">
+        UPDATE h1_fileitems SET item_name=#{newName}
+        WHERE id=#{fileItemId};
+    </update>
+    <update id="setFileItemToBePublic">
+        UPDATE h1_fileitems SET is_private=#{isPublic} WHERE id=#{fileItemId};
+    </update>
 
+    <update id="setFileItemToBeHealthRelated">
+        UPDATE h1_fileitems SET is_health=true WHERE id=#{fileItemId};
     </update>
 
 

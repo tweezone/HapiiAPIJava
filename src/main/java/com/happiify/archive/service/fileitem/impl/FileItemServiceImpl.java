@@ -1,6 +1,7 @@
 package com.happiify.archive.service.fileitem.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import com.happiify.archive.dao.FileItemDao;
 import com.happiify.archive.domain.FileItem;
@@ -42,6 +43,20 @@ public class FileItemServiceImpl implements FileItemService {
     @Override
     public int renameFileItem(int fileItemId, String newName) {
         return fileItemDao.renameFileItem(fileItemId, newName);
+    }
+
+    @Override
+    public FileItem getFileItemDetail(int fileItemId) {
+        return fileItemDao.getFileItemDetail(fileItemId);
+    }
+
+    @Override
+    public void setFileItemToBePublic(int fileItemId, boolean isPublic) {
+        fileItemDao.setFileItemToBePublic(fileItemId, isPublic);
+    }
+    @Override
+    public void setFileItemToBeHealthRelated(int fileItemId){
+        fileItemDao.setFileItemToBeHealthRelated(fileItemId);
     }
 
 }

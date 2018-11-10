@@ -4,6 +4,7 @@ import com.happiify.archive.domain.FileItem;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface FileItemDao {
     int insert(FileItem item);
@@ -15,13 +16,13 @@ public interface FileItemDao {
                      @Param("isFolder") boolean isFolder,
                      @Param("currentPath") String currentPath);
 
-    int renameFileItem(int fileItemId, String newName);
+    int renameFileItem(@Param("fileItemId") int fileItemId, @Param("newName") String newName);
 
-    void move(int fileItemId, String destinationPath);
-
-    void share(List<String> users);
-
-    void makePublic(boolean currentStatus);
+    FileItem getFileItemDetail(int fileItemId);
 
     List<FileItem> getFileItemsByUserId(int userId);
+
+    void setFileItemToBePublic(@Param("fileItemId") int fileItemId, @Param("isPublic") boolean isPublic);
+
+    void setFileItemToBeHealthRelated(int fileItemId);
 }
