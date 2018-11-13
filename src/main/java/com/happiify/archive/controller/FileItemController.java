@@ -1,7 +1,14 @@
 package com.happiify.archive.controller;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.ibatis.annotations.Param;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.springframework.content.commons.repository.Store;
+import org.springframework.content.fs.config.EnableFilesystemStores;
+import org.springframework.content.fs.io.FileSystemResourceLoader;
+import org.springframework.content.rest.StoreRestResource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
 import com.happiify.archive.domain.FileItem;
 
@@ -20,8 +27,8 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class FileItemController {
 
-    //static final String uploadedFileFolder = "/Users/chenguoyan/Desktop/uploadedfile";
-    static final String uploadedFileFolder = "/var/www/html/api/uploadedfile";
+    static final String uploadedFileFolder = "/Users/chenguoyan/Desktop/uploadedfile";
+//    static final String uploadedFileFolder = "/var/www/html/api/uploadedfile";
 
     @RequestMapping(value = "test", method = RequestMethod.GET)
     public String test(@RequestParam String param) {
@@ -69,9 +76,11 @@ public class FileItemController {
 
         try {
             File toBeDownloadedFile = new File(uploadedFileFolder, physicalFileName);
+            String fileExtension = FilenameUtils.getExtension(toBeDownloadedFile.getPath());
+            String contentType = fileExtension.equals("mp4") ? "audio/mp3" : "application/octet-stream";
             InputStream inputStream = new FileInputStream(toBeDownloadedFile);
             OutputStream outputStream = response.getOutputStream();
-            response.setContentType("application/octet-stream");
+            response.setContentType(contentType);
             response.setContentLength((int) toBeDownloadedFile.length());
             response.addHeader("Content-Disposition", "attachment;filename=" + physicalFileName);
             IOUtils.copy(inputStream, outputStream);
@@ -116,16 +125,36 @@ public class FileItemController {
     FileItem getFileItemDetail(@PathVariable int fileItemId) {
         return fileItemService.getFileItemDetail(fileItemId);
     }
-    @RequestMapping(value = "archive/setpublic/",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    void setFileItemToBePublic(@RequestBody Map<String, String> requestMap){
+
+    @RequestMapping(value = "archive/setpublic/", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    void setFileItemToBePublic(@RequestBody Map<String, String> requestMap) {
         int fileItemId = Integer.parseInt(requestMap.get("fileItemId"));
         boolean isPublic = Boolean.parseBoolean(requestMap.get("isPublic"));
         fileItemService.setFileItemToBePublic(fileItemId, isPublic);
     }
+
     @RequestMapping(value = "archive/sethealth/{fileItemId}", method = RequestMethod.GET)
-    void setFileItemToBeHealthRelated(@PathVariable int fileItemId ){
+    void setFileItemToBeHealthRelated(@PathVariable int fileItemId) {
 
         fileItemService.setFileItemToBeHealthRelated(fileItemId);
+    }
+
+//    @Configuration
+//    @EnableFilesystemStores
+//    public static class StoreConfig {
+//        File filesystemRoot() {
+//            return new File(uploadedFileFolder);
+//        }
+//
+//        @Bean
+//        public FileSystemResourceLoader fsResourceLoader() throws Exception {
+//            return new FileSystemResourceLoader(filesystemRoot().getAbsolutePath());
+//        }
+//    }
+
+    @StoreRestResource(path="video")
+    public interface ContentStore extends Store<String> {
+        //
     }
 
 }
