@@ -45,7 +45,8 @@ public class FileItemController {
 
     @RequestMapping(value = "archive/addfileitem", method = RequestMethod.POST)
     public int addFileItem(FileItem item) {
-        return fileItemService.addFileItem(item);
+        fileItemService.addFileItem(item);
+        return item.getId();
     }
 
     @RequestMapping(value = "archive/upload", method = RequestMethod.POST)
@@ -67,7 +68,7 @@ public class FileItemController {
         }
         item.setCreation_date(new Date());
         fileItemService.addFileItem(item);
-        return item.getPhysical_name();
+        return item.getId().toString();
     }
 
     @RequestMapping(value = "archive/download/{physicalFileName}", method = RequestMethod.GET)
@@ -139,22 +140,5 @@ public class FileItemController {
         fileItemService.setFileItemToBeHealthRelated(fileItemId);
     }
 
-//    @Configuration
-//    @EnableFilesystemStores
-//    public static class StoreConfig {
-//        File filesystemRoot() {
-//            return new File(uploadedFileFolder);
-//        }
-//
-//        @Bean
-//        public FileSystemResourceLoader fsResourceLoader() throws Exception {
-//            return new FileSystemResourceLoader(filesystemRoot().getAbsolutePath());
-//        }
-//    }
-
-    @StoreRestResource(path="video")
-    public interface ContentStore extends Store<String> {
-        //
-    }
 
 }

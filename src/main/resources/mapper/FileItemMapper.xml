@@ -5,10 +5,11 @@
 <mapper namespace="com.happiify.archive.dao.FileItemDao">
 
 
-    <insert id="insert" parameterType="com.happiify.archive.domain.FileItem">
+    <insert id="insert" parameterType="com.happiify.archive.domain.FileItem"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO h1_fileitems (user_id, item_path, item_name, physical_name, item_description, creation_date,
         item_size, is_folder)
         VALUES(#{user_id},#{item_path},#{item_name},#{physical_name},#{item_description},#{creation_date},#{item_size},#{is_folder})
+
     </insert>
 
     <select id="getFileItemsByUserId" resultType="com.happiify.archive.domain.FileItem">
