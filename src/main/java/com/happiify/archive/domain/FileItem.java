@@ -18,6 +18,8 @@ public class FileItem implements Serializable {
     private String item_name;
     private MultipartFile item_file;
     private Boolean is_private = true;
+    private Boolean is_financial = false;
+    private Boolean is_encrypted = false;
     private Boolean is_health = false;
     private Boolean is_folder;
     private Boolean is_deleted = false;
@@ -26,6 +28,7 @@ public class FileItem implements Serializable {
     private String physical_name;
     private String user_name;
     private long item_size = 0;
+    private Integer item_category;
 
     public String getItem_name() {
         return item_name;
@@ -167,5 +170,29 @@ public class FileItem implements Serializable {
 
     public void setItem_size(long item_size) {
         this.item_size = item_size;
+    }
+
+    public Boolean getIs_financial() {
+        return is_financial;
+    }
+
+    public void setIs_financial(Boolean is_financial) {
+        this.is_financial = is_financial;
+    }
+
+    public Boolean getIs_encrypted() {
+        return is_encrypted;
+    }
+
+    public void setIs_encrypted(Boolean is_encrypted) {
+        this.is_encrypted = is_encrypted;
+    }
+
+    public Integer getItem_category() {
+        return item_category;
+    }
+
+    public void setItem_category(Integer item_category) {
+        this.item_category = item_category;
     }
 }

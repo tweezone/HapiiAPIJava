@@ -53,7 +53,6 @@ public class FileItemController {
     public String upload(FileItem item) {
 
         try {
-
             if (item.getItem_file() != null) {
                 String originalFilename = item.getItem_file().getOriginalFilename();
                 item.setPhysical_name(originalFilename);
@@ -101,19 +100,19 @@ public class FileItemController {
         return fileItemId;
     }
 
-    @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public int moveFileItem(@RequestBody Map<String, String> requestMap) {
-        int fileItemId = Integer.parseInt(requestMap.get("item_id"));
-        System.out.println(fileItemId);
-
-        boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
-        System.out.println(isFolder);
-        String destinationPath = requestMap.get("destination_folder");
-        System.out.println(destinationPath);
-        String currentPath = requestMap.get("current_path");
-
-        return fileItemService.moveFileItem(fileItemId, destinationPath, isFolder, currentPath);
-    }
+//    @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+//    public int moveFileItem(@RequestBody Map<String, String> requestMap) {
+//        int fileItemId = Integer.parseInt(requestMap.get("item_id"));
+//        System.out.println(fileItemId);
+//
+//        boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
+//        System.out.println(isFolder);
+//        String destinationPath = requestMap.get("destination_folder");
+//        System.out.println(destinationPath);
+//        String currentPath = requestMap.get("current_path");
+//
+//        return fileItemService.moveFileItem(fileItemId, destinationPath, isFolder, currentPath);
+//    }
 
     @RequestMapping(value = "archive/rename", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public int renameFileItem(@RequestBody Map<String, String> requestMap) {
@@ -140,5 +139,20 @@ public class FileItemController {
         fileItemService.setFileItemToBeHealthRelated(fileItemId);
     }
 
+    @RequestMapping(value = "archive/setcategory/{itemId}/{itemCategory}",method = RequestMethod.GET)
+    void setFileItemCategory(@PathVariable int itemId, @PathVariable int itemCategory) {
+        fileItemService.setFileItemCategory(itemId, itemCategory);
+    }
+
+    @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public void moveFileItem(@RequestBody Map<String, String> requestMap) {
+        int fileItemId = Integer.parseInt(requestMap.get("item_id"));
+        int newCategory = Integer.parseInt(requestMap.get("new_category"));
+        //boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
+        String destinationPath = requestMap.get("destination_folder");
+        //String currentPath = requestMap.get("current_path");
+        fileItemService.changeFileItemPath(fileItemId, destinationPath);
+        fileItemService.setFileItemCategory(fileItemId, newCategory);
+    }
 
 }

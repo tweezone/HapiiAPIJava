@@ -54,9 +54,20 @@ public class FileItemServiceImpl implements FileItemService {
     public void setFileItemToBePublic(int fileItemId, boolean isPublic) {
         fileItemDao.setFileItemToBePublic(fileItemId, isPublic);
     }
+
     @Override
-    public void setFileItemToBeHealthRelated(int fileItemId){
+    public void setFileItemToBeHealthRelated(int fileItemId) {
         fileItemDao.setFileItemToBeHealthRelated(fileItemId);
+    }
+
+    @Override
+    public void setFileItemCategory(int itemId, int itemCategory) {
+        fileItemDao.setFileItemCategory(itemId, itemCategory);
+    }
+
+    @Override
+    public void changeFileItemPath(int itemId, String destinationPath) {
+        fileItemDao.changeFileItemPath(itemId, destinationPath);
     }
 
 }

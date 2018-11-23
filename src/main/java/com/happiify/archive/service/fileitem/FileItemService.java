@@ -14,4 +14,6 @@ public interface FileItemService {
     FileItem getFileItemDetail(int fileItemId);
     void setFileItemToBePublic(int fileItemId, boolean isPublic);
     void setFileItemToBeHealthRelated(int fileItemId);
+    void setFileItemCategory(int itemId, int itemCategory);
+    void changeFileItemPath(int itemId, String destinationPath);
 }

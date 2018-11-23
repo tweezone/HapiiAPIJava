@@ -7,8 +7,8 @@
 
     <insert id="insert" parameterType="com.happiify.archive.domain.FileItem"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO h1_fileitems (user_id, item_path, item_name, physical_name, item_description, creation_date,
-        item_size, is_folder)
-        VALUES(#{user_id},#{item_path},#{item_name},#{physical_name},#{item_description},#{creation_date},#{item_size},#{is_folder})
+        item_size, is_folder, item_category)
+        VALUES(#{user_id},#{item_path},#{item_name},#{physical_name},#{item_description},#{creation_date},#{item_size},#{is_folder},#{item_category})
 
     </insert>
 
@@ -46,6 +46,11 @@
     <update id="setFileItemToBeHealthRelated">
         UPDATE h1_fileitems SET is_health=true WHERE id=#{fileItemId};
     </update>
-
-
+    <update id="setFileItemCategory">
+        UPDATE h1_fileitems SET item_category=#{itemCategory} WHERE id=#{itemId};
+        UPDATE h1_fileitems SET item_path ="/" WHERE id=#{itemId};
+    </update>
+    <update id="changeFileItemPath">
+        UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE id=#{itemId}
+    </update>
 </mapper>
