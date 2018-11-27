@@ -69,5 +69,9 @@ public class FileItemServiceImpl implements FileItemService {
     public void changeFileItemPath(int itemId, String destinationPath) {
         fileItemDao.changeFileItemPath(itemId, destinationPath);
     }
+    @Override
+    public void changeFileItemsPathInFolder(String currentPath, String destinationPath){
+        fileItemDao.changeFileItemsPathInFolder(currentPath, destinationPath);
+    }
 
 }

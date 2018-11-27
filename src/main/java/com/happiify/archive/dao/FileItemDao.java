@@ -26,6 +26,10 @@ public interface FileItemDao {
     void setFileItemToBePublic(@Param("fileItemId") int fileItemId, @Param("isPublic") boolean isPublic);
 
     void setFileItemToBeHealthRelated(int fileItemId);
+
     void setFileItemCategory(@Param("itemId") int itemId, @Param("itemCategory") int itemCategory);
+
     void changeFileItemPath(@Param("itemId") int itemId, @Param("destinationPath") String destinationPath);
+
+    void changeFileItemsPathInFolder(@Param("currentPath") String currentPath, @Param("destinationPath") String destinationPath);
 }

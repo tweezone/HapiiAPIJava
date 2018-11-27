@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-
 <mapper namespace="com.happiify.archive.dao.FileItemDao">
-
 
     <insert id="insert" parameterType="com.happiify.archive.domain.FileItem"  useGeneratedKeys="true" keyProperty="id" keyColumn="id">
         INSERT INTO h1_fileitems (user_id, item_path, item_name, physical_name, item_description, creation_date,
         item_size, is_folder, item_category)
         VALUES(#{user_id},#{item_path},#{item_name},#{physical_name},#{item_description},#{creation_date},#{item_size},#{is_folder},#{item_category})
-
     </insert>
 
     <select id="getFileItemsByUserId" resultType="com.happiify.archive.domain.FileItem">
@@ -26,13 +23,7 @@
 
     <update id="moveFileItem">
 
-        UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE
-        <if test="isFolder==false">
-            id=#{fileItemId};
-        </if>
-        <if test="isFolder==true">
-            (item_path like CONCAT(#{currentPath},'%') AND is_folder = false) OR id=#{fileItemId}
-        </if>
+        UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE id=#{fileItemId};
 
     </update>
     <update id="renameFileItem">
@@ -52,5 +43,8 @@
     </update>
     <update id="changeFileItemPath">
         UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE id=#{itemId}
+    </update>
+    <update id="changeFileItemsPathInFolder">
+        UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE POSITION(#{currentPath} IN item_path)=1
     </update>
 </mapper>

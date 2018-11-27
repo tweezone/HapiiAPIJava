@@ -100,20 +100,6 @@ public class FileItemController {
         return fileItemId;
     }
 
-//    @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-//    public int moveFileItem(@RequestBody Map<String, String> requestMap) {
-//        int fileItemId = Integer.parseInt(requestMap.get("item_id"));
-//        System.out.println(fileItemId);
-//
-//        boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
-//        System.out.println(isFolder);
-//        String destinationPath = requestMap.get("destination_folder");
-//        System.out.println(destinationPath);
-//        String currentPath = requestMap.get("current_path");
-//
-//        return fileItemService.moveFileItem(fileItemId, destinationPath, isFolder, currentPath);
-//    }
-
     @RequestMapping(value = "archive/rename", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public int renameFileItem(@RequestBody Map<String, String> requestMap) {
         int fileItemId = Integer.parseInt(requestMap.get("fileItemId"));
@@ -147,12 +133,24 @@ public class FileItemController {
     @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     public void moveFileItem(@RequestBody Map<String, String> requestMap) {
         int fileItemId = Integer.parseInt(requestMap.get("item_id"));
-        int newCategory = Integer.parseInt(requestMap.get("new_category"));
-        //boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
+        //int newCategory = Integer.parseInt(requestMap.get("new_category"));
+        boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
         String destinationPath = requestMap.get("destination_folder");
-        //String currentPath = requestMap.get("current_path");
-        fileItemService.changeFileItemPath(fileItemId, destinationPath);
-        fileItemService.setFileItemCategory(fileItemId, newCategory);
+
+        if(!isFolder){
+            fileItemService.changeFileItemPath(fileItemId, destinationPath);
+        } else {
+            String currentPath = requestMap.get("current_path");
+            String itemName = requestMap.get("item_name");
+            int currentIndex = currentPath.indexOf(itemName);
+            String leftPartPath = currentPath.substring(currentIndex);
+            String finalNewPath = destinationPath + leftPartPath;
+            fileItemService.changeFileItemPath(fileItemId,destinationPath);
+            fileItemService.changeFileItemsPathInFolder(currentPath,finalNewPath);
+
+        }
+
+        //fileItemService.setFileItemCategory(fileItemId, newCategory);
     }
 
 }
