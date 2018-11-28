@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.happiify.archive.domain.FileItem;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -70,6 +71,27 @@ public class FileItemController {
         return item.getId().toString();
     }
 
+    @RequestMapping(value = "archive/edit", method = RequestMethod.POST)
+    public String editFileItem(FileItem item) {
+
+        try {
+            if (item.getItem_file() != null) {
+                String originalFilename = item.getItem_file().getOriginalFilename();
+                item.setPhysical_name(originalFilename);
+                item.setItem_size(item.getItem_file().getSize());
+
+                File localFile = new File(uploadedFileFolder, originalFilename);
+                item.getItem_file().transferTo(localFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "upload failed";
+        }
+        item.setModify_date(new Date());
+        fileItemService.editFileItem(item);
+        return item.getId().toString();
+    }
+
     @RequestMapping(value = "archive/download/{physicalFileName}", method = RequestMethod.GET)
     public String download(@PathVariable String physicalFileName, HttpServletRequest request,
                            HttpServletResponse response) {
@@ -86,6 +108,7 @@ public class FileItemController {
             IOUtils.copy(inputStream, outputStream);
             outputStream.flush();
         } catch (IOException e) {
+            System.out.println("====io error");
             e.printStackTrace();
             return "Download failed";
         }
@@ -125,9 +148,28 @@ public class FileItemController {
         fileItemService.setFileItemToBeHealthRelated(fileItemId);
     }
 
-    @RequestMapping(value = "archive/setcategory/{itemId}/{itemCategory}",method = RequestMethod.GET)
+    @RequestMapping(value = "archive/setcategory/{itemId}/{itemCategory}", method = RequestMethod.GET)
     void setFileItemCategory(@PathVariable int itemId, @PathVariable int itemCategory) {
-        fileItemService.setFileItemCategory(itemId, itemCategory);
+        //fileItemService.setFileItemCategory(itemId, itemCategory);
+        FileItem fileItem = fileItemService.getFileItemDetail(itemId);
+        if (!fileItem.getIs_folder()) {
+            fileItemService.setFileItemCategory(itemId, itemCategory, "/");
+            return;
+        }
+        String currentPath = fileItem.getItem_path() + fileItem.getItem_name() + "/";
+        List<FileItem> itemsInFolder = new ArrayList();
+        List<FileItem> allFileItemsByUserId = fileItemService.fetchAllFileItems(fileItem.getUser_id());
+        for (FileItem item : allFileItemsByUserId) {
+            if (item.getItem_path() != null && item.getItem_path().startsWith(currentPath)) {
+                itemsInFolder.add(item);
+            }
+        }
+        fileItemService.setFileItemCategory(itemId, itemCategory, "/");
+        int indexOfPreviousPath = currentPath.indexOf(fileItem.getItem_name());
+        for (FileItem item : itemsInFolder) {
+            String newPath = item.getItem_path().substring(indexOfPreviousPath - 1);
+            fileItemService.setFileItemCategory(item.getId(), itemCategory, newPath);
+        }
     }
 
     @RequestMapping(value = "archive/move", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
@@ -137,7 +179,7 @@ public class FileItemController {
         boolean isFolder = Boolean.parseBoolean(requestMap.get("is_folder"));
         String destinationPath = requestMap.get("destination_folder");
 
-        if(!isFolder){
+        if (!isFolder) {
             fileItemService.changeFileItemPath(fileItemId, destinationPath);
         } else {
             String currentPath = requestMap.get("current_path");
@@ -145,8 +187,8 @@ public class FileItemController {
             int currentIndex = currentPath.indexOf(itemName);
             String leftPartPath = currentPath.substring(currentIndex);
             String finalNewPath = destinationPath + leftPartPath;
-            fileItemService.changeFileItemPath(fileItemId,destinationPath);
-            fileItemService.changeFileItemsPathInFolder(currentPath,finalNewPath);
+            fileItemService.changeFileItemPath(fileItemId, destinationPath);
+            fileItemService.changeFileItemsPathInFolder(currentPath, finalNewPath);
 
         }
 

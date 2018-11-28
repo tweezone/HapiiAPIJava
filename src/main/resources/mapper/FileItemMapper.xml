@@ -38,13 +38,15 @@
         UPDATE h1_fileitems SET is_health=true WHERE id=#{fileItemId};
     </update>
     <update id="setFileItemCategory">
-        UPDATE h1_fileitems SET item_category=#{itemCategory} WHERE id=#{itemId};
-        UPDATE h1_fileitems SET item_path ="/" WHERE id=#{itemId};
+        UPDATE h1_fileitems SET item_category=#{itemCategory}, item_path =#{newPath} WHERE id=#{itemId};
     </update>
     <update id="changeFileItemPath">
         UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE id=#{itemId}
     </update>
     <update id="changeFileItemsPathInFolder">
         UPDATE h1_fileitems SET item_path=#{destinationPath} WHERE POSITION(#{currentPath} IN item_path)=1
+    </update>
+    <update id="editFileItem" parameterType="com.happiify.archive.domain.FileItem" >
+        UPDATE h1_fileitems SET modify_date=#{modify_date} WHERE id=#{id}
     </update>
 </mapper>

@@ -27,9 +27,10 @@ public interface FileItemDao {
 
     void setFileItemToBeHealthRelated(int fileItemId);
 
-    void setFileItemCategory(@Param("itemId") int itemId, @Param("itemCategory") int itemCategory);
+    void setFileItemCategory(@Param("itemId") int itemId, @Param("itemCategory") int itemCategory, @Param("newPath") String newPath);
 
     void changeFileItemPath(@Param("itemId") int itemId, @Param("destinationPath") String destinationPath);
 
     void changeFileItemsPathInFolder(@Param("currentPath") String currentPath, @Param("destinationPath") String destinationPath);
+    void editFileItem(FileItem fileItem);
 }

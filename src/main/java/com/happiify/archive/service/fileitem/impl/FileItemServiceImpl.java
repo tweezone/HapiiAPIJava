@@ -61,17 +61,23 @@ public class FileItemServiceImpl implements FileItemService {
     }
 
     @Override
-    public void setFileItemCategory(int itemId, int itemCategory) {
-        fileItemDao.setFileItemCategory(itemId, itemCategory);
+    public void setFileItemCategory(int itemId, int itemCategory, String newPath) {
+        fileItemDao.setFileItemCategory(itemId, itemCategory, newPath);
     }
 
     @Override
     public void changeFileItemPath(int itemId, String destinationPath) {
         fileItemDao.changeFileItemPath(itemId, destinationPath);
     }
+
     @Override
-    public void changeFileItemsPathInFolder(String currentPath, String destinationPath){
+    public void changeFileItemsPathInFolder(String currentPath, String destinationPath) {
         fileItemDao.changeFileItemsPathInFolder(currentPath, destinationPath);
+    }
+
+    @Override
+    public void editFileItem(FileItem fileItem) {
+        fileItemDao.editFileItem(fileItem);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.happiify.archive.service.fileitem;
 
 import java.util.List;
+
 import com.happiify.archive.domain.FileItem;
 
 public interface FileItemService {
@@ -20,8 +21,11 @@ public interface FileItemService {
 
     void setFileItemToBeHealthRelated(int fileItemId);
 
-    void setFileItemCategory(int itemId, int itemCategory);
+    void setFileItemCategory(int itemId, int itemCategory, String newPath);
 
     void changeFileItemPath(int itemId, String destinationPath);
+
     void changeFileItemsPathInFolder(String currentPath, String destinationPath);
+
+    void editFileItem(FileItem fileItem);
 }
