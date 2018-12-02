@@ -11,12 +11,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.*;
 import com.happiify.archive.domain.FileItem;
+import com.happiify.utils.AESEncrypter;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.happiify.archive.service.fileitem.FileItemService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,8 +189,100 @@ public class FileItemController {
             fileItemService.changeFileItemsPathInFolder(currentPath, finalNewPath);
 
         }
-
         //fileItemService.setFileItemCategory(fileItemId, newCategory);
+    }
+
+    @RequestMapping(value = "archive/encrypt/", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    public void encryptFile(@RequestBody Map<String, String> requestMap) {
+        int itemId = Integer.parseInt(requestMap.get("item_id"));
+        int destinationItemCategory = Integer.parseInt(requestMap.get("destination_item_category"));
+        String fileName = requestMap.get("physical_name");
+        String pwd = requestMap.get("password");
+        try {
+            AESEncrypter aesEncrypter = new AESEncrypter(pwd);
+            String base64FileContent = fileToBase64(uploadedFileFolder + fileName);
+            String encryptedFileContent = aesEncrypter.encrypt(base64FileContent);
+            File encryptedFile = new File(uploadedFileFolder, fileName);
+            FileOutputStream outputStream = new FileOutputStream(encryptedFile, false);
+            byte[] data = encryptedFileContent.getBytes();
+            outputStream.write(data);
+            outputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        fileItemService.setFileItemCategory(itemId, destinationItemCategory, "/");
+    }
+
+    void encryptFile(String filePath, String fileName, String password) {
+        FileOutputStream fileOutputStream = null;
+        String base64Content = fileToBase64(filePath + fileName);
+        try {
+            AESEncrypter aesEncrypter = new AESEncrypter(password);
+            String encryptedContent = aesEncrypter.encrypt(base64Content);
+            File file = new File(filePath, fileName);
+            fileOutputStream = new FileOutputStream(file, false);
+            byte[] data = encryptedContent.getBytes();
+            fileOutputStream.write(data);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (fileOutputStream != null) {
+                try {
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    void decryptFile(String filePath, String fileName, String password) {
+        InputStream inputStream = null;
+        OutputStream outputStream = null;
+        File file = new File(filePath,fileName);
+        try {
+            inputStream = new FileInputStream(file);
+            byte[] data = new byte[inputStream.available()];
+            AESEncrypter aesEncrypter = new AESEncrypter(password);
+            String  encryptedContent = new String(data);
+            String decryptedContent = aesEncrypter.decrypt(encryptedContent);
+            byte[] originalContent = Base64.getDecoder().decode(decryptedContent);
+
+            outputStream = new FileOutputStream(file,false);
+            outputStream.write(originalContent);
+            outputStream.flush();
+            outputStream.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public String fileToBase64(String path) {
+        String base64 = null;
+        InputStream in = null;
+        try {
+            File file = new File(path);
+            in = new FileInputStream(file);
+            byte[] bytes = new byte[in.available()];
+            base64 = Base64.getEncoder().encodeToString(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return base64;
     }
 
 }
