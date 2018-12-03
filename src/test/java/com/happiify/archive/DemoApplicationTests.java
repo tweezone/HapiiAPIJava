@@ -1,5 +1,4 @@
 package com.happiify.archive;
-import com.happiify.utils.AESEncrypter;
 import com.happiify.utils.CGEncryptor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
