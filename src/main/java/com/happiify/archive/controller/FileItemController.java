@@ -5,10 +5,13 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.web.bind.annotation.*;
 import com.happiify.archive.domain.FileItem;
+
 import java.io.*;
 import java.util.*;
+
 import com.happiify.archive.service.fileitem.FileItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -55,6 +58,26 @@ public class FileItemController {
         item.setCreation_date(new Date());
         fileItemService.addFileItem(item);
         return item.getId().toString();
+    }
+
+    @RequestMapping(value = "archive/uploadchatvideo", method = RequestMethod.POST)
+    public String uploadChatVideo(FileItem item) {
+        String originalFilename = "upload failed";
+        try {
+            if (item.getItem_file() != null) {
+                originalFilename = item.getItem_file().getOriginalFilename();
+                item.setPhysical_name(originalFilename);
+                item.setItem_size(item.getItem_file().getSize());
+                File localFile = new File(uploadedFileFolder, originalFilename);
+                item.getItem_file().transferTo(localFile);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "upload failed";
+        }
+//        item.setCreation_date(new Date());
+//        fileItemService.addFileItem(item);
+        return originalFilename;
     }
 
     @RequestMapping(value = "archive/edit", method = RequestMethod.POST)
@@ -197,6 +220,7 @@ public class FileItemController {
         }
         fileItemService.setFileItemCategory(itemId, destinationItemCategory, "/");
     }
+
     @RequestMapping(value = "archive/decrypt/", method = RequestMethod.POST,
             produces = "application/json;charset=UTF-8")
     public void decryptFile(@RequestBody Map<String, String> requestMap) {
