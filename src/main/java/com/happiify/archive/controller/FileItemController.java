@@ -11,6 +11,7 @@ import java.util.*;
 
 import com.happiify.archive.service.fileitem.FileItemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 public class FileItemController {
 
     static final String uploadedFileFolder = "/Users/chenguoyan/Desktop/uploadedfile";
-//    static final String uploadedFileFolder = "/var/www/html/api/uploadedfile";
+    //    static final String uploadedFileFolder = "/var/www/html/api/uploadedfile";
+    static final String uploadedChatFileFolder = "put the folder of uploaded files ";
 
     @RequestMapping(value = "test", method = RequestMethod.GET)
     public String test(@RequestParam String param) {
@@ -58,6 +60,20 @@ public class FileItemController {
         item.setCreation_date(new Date());
         fileItemService.addFileItem(item);
         return item.getId().toString();
+    }
+
+    @RequestMapping(value = "chat/upload", method = RequestMethod.POST)
+    public String uploadChatFile(@RequestBody Map<String, MultipartFile> requestMap) {
+        try {
+            MultipartFile uploadedFile = requestMap.get("file");
+            String fileName = uploadedFile.getName();
+            File localFile = new File(uploadedChatFileFolder, fileName);
+            uploadedFile.transferTo(localFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "upload failed";
+        }
+        return "Successful";
     }
 
     @RequestMapping(value = "archive/uploadchatvideo", method = RequestMethod.POST)
