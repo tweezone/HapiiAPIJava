@@ -65,7 +65,7 @@ public class FileItemController {
     @RequestMapping(value = "chat/upload", method = RequestMethod.POST)
     public String uploadChatFile(@RequestParam("file") MultipartFile file) {
         try {
-            String fileName = file.getName();
+            String fileName = file.getOriginalFilename();
             File localFile = new File(uploadedChatFileFolder, fileName);
             file.transferTo(localFile);
         } catch (IOException e) {
