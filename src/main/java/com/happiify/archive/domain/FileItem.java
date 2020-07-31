@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 
 
-public class FileItem implements Serializable {
+public class FileItem<MultipartFile> implements Serializable {
     private static final long serialVersionUID = 1L;
     private Integer id;
     private String item_path;

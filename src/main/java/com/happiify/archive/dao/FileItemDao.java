@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface FileItemDao {
 
-    int insert(FileItem item);
+    int insert(  item);
 
     int deleteFileItem(int fileItemId);
 
